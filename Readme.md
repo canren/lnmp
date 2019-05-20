@@ -33,6 +33,8 @@ $ container.sh kill # 删除容器
 ```
 ~/dockerapps/
 	lnmp/
+		memcached/
+			Dockerfile
 		mongo/
 			Dockerfile
 			mongod.conf
@@ -46,6 +48,7 @@ $ container.sh kill # 删除容器
 			nginx.conf
 		php56/
 			pkg/
+			    memcache.taz # php7 memcache扩展
 			Dockerfile
 			php.ini
 			php-dev.ini
@@ -164,7 +167,15 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: 123456
-    command: mongod
+    
+  memcached:
+      build: ./memcached
+      container_name: "canren-lnmp-memcached"
+      ports:
+        - "11211:11211"
+      networks:
+        - "lnmp" 
+      command: "-m 128"
 
 networks:
   lnmp:
@@ -284,4 +295,10 @@ MAINTAINER canren "bestsxf@gmail.com"
 # 设置时区
 ENV TZ=Asia/Shanghai
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+```
+#### memcache
+>  memcache Decokerfile相关
+```dsconfig
+FROM memcached:1.5-alpine
+MAINTAINER canren "bestsxf@gmail.com"
 ```

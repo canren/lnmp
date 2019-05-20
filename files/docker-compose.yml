@@ -5,8 +5,10 @@ services:
     container_name: "canren-lnmp-php56"
     ports:
       - "9001:9000"
+    networks:
+      - "lnmp"
     volumes:
-      - ../../dockerapps:/data/www:rw
+      - ../../../dockerapps:/data/www:rw
       - ./php56/php-dev.ini:/usr/local/etc/php/php.ini:ro
       - ./php56/php-fpm.conf:/usr/local/etc/php-fpm.conf:ro
       - ../logs/php-fpm56:/var/log/php-fpm:rw
@@ -21,7 +23,7 @@ services:
     networks:
       - "lnmp"
     volumes:
-      - ../../dockerapps:/data/www:rw
+      - ../../../dockerapps:/data/www:rw
       - ./php72/php-dev.ini:/usr/local/etc/php/php.ini:ro
       - ./php72/php-fpm.conf:/usr/local/etc/php-fpm.conf:ro
       - ../logs/php-fpm72:/var/log/php-fpm:rw
@@ -38,7 +40,7 @@ services:
     networks:
       - "lnmp"
     volumes:
-      - ../../dockerapps:/data/www:rw
+      - ../../../dockerapps:/data/www:rw
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ../logs/nginx:/var/log/nginx:rw
@@ -80,6 +82,8 @@ services:
     container_name: "canren-lnmp-mongo"
     ports:
       - "27017:27017"
+    networks:
+      - "lnmp"
     volumes:
       - ../data/mongo:/data:rw
       - ../logs/mongo:/var/log/mongodb:rw
@@ -87,7 +91,15 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: 123456
-    command: mongod
+
+  memcached:
+    build: ./memcached
+    container_name: "canren-lnmp-memcached"
+    ports:
+      - "11211:11211"
+    networks:
+      - "lnmp"
+    command: "-m 128"
 
 networks:
   lnmp:

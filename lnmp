@@ -10,7 +10,7 @@ docker_build() {
 docker_start() {
     if [ -n "`docker ps --format "{{.Names}}" --filter name=canren-lnmp`" ]; then
         docker start `docker ps -a --format "{{.Names}}" --filter name=canren-lnmp`
-        echo -e "\033[32mall start"
+        echo -e "\033[32m start"
     fi
 }
 
@@ -18,14 +18,14 @@ docker_start() {
 docker_stop() {
     if [ -n "`docker ps --format "{{.Names}}" --filter name=canren-lnmp`" ]; then
         docker stop `docker ps -a --format "{{.Names}}" --filter name=canren-lnmp`
-        echo -e "\033[32mall stop"
+        echo -e "\033[32m stop"
     fi
 }
 # docker 重新启动
 docker_restart() {
     if [ -n "`docker ps --format "{{.Names}}" --filter name=canren-lnmp`" ]; then
         docker restart `docker ps -a --format "{{.Names}}" --filter name=canren-lnmp`
-        echo -e "\033[32mall restart"
+        echo -e "\033[32m restart"
     fi
 }
 # docker 容器删除
@@ -33,8 +33,9 @@ docker_kill() {
     docker_stop
     if [ -n "`docker ps -a --format "{{.Names}}" --filter name=canren-lnmp`" ]; then
         docker rm `docker ps -a --format "{{.Names}}" --filter name=canren-lnmp`
-        echo -e "\033[31mall kill"
+        echo -e "\033[31m kill"
     fi
+    echo -e "\033[0m kill"
 }
 case "$1" in
 start)
