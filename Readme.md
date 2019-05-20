@@ -2,14 +2,20 @@
 
 [TOC]
 ## 使用
+
+### linux 环境
 ```bash
 $ mkdir ~/dockerapps # ln -s 自己的工作目录过来
 $ cd ~/dockerapps
-$ git pull git@github.com:canren/dockerapps.git
+$ git clone https://github.com/canren/lnmp.git
 $ cd lnmp
-$ ./container.sh build # 中间断开命令重试
+$ ./lnmp build # 中间断开命令重试即可
 ```
 
+### linux 环境
+```
+windows环境脚本还在编写当中
+```
 ------------------------
 ### 容器相关命令
 

@@ -54,10 +54,9 @@ build)
         ;;
 
 kill)
-        docker_stop
         docker_kill
         ;;
 *)
-        echo $"Usage: $prog {build|start|stop|restart|kill}"
+        echo $"Usage: {build|start|stop|restart|kill}"
         exit 1
 esac
