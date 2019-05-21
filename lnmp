@@ -1,9 +1,15 @@
 #!/bin/bash
 
-# docker 容器打包
+# docker 镜像打包
 docker_build() {
     docker_kill
     docker-compose -f ./files/docker-compose.yml build
+    docker_up
+}
+
+# docker 创建容器
+docker_up() {
+    docker-compose -f ./files/docker-compose.yml up -d
 }
 
 # docker 开始运行
