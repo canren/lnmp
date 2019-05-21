@@ -91,6 +91,7 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: 123456
+    restart: always
 
   memcached:
     build: ./memcached
@@ -100,6 +101,7 @@ services:
     networks:
       - "lnmp"
     command: "-m 128"
+    restart: always
 
 networks:
   lnmp:

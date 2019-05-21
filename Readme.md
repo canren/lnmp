@@ -83,11 +83,13 @@ $ lnmp kill     # 删除容器
 ```dsconfig
 version: '3.7'
 services:
-  php-fpm56: # 只用php-fpm72可以删除php-fpm56配置
+  php-fpm56: # 只用php-fpm72可以删除php-fpm56
     build: ./php56
-    container_name: "lnmp-php56"
+    container_name: "canren-lnmp-php56"
     ports:
       - "9001:9000"
+    networks:
+      - "lnmp"
     volumes:
       - ../../../dockerapps:/data/www:rw
       - ./php56/php-dev.ini:/usr/local/etc/php/php.ini:ro
@@ -96,9 +98,9 @@ services:
     restart: always
     command: php-fpm
 
-  php-fpm72: # 只用php-fpm56可以删除php-fpm72配置
+  php-fpm72:
     build: ./php72
-    container_name: "lnmp-php72"
+    container_name: "canren-lnmp-php72"
     ports:
       - "9000:9000"
     networks:
@@ -113,7 +115,7 @@ services:
 
   nginx:
     build: ./nginx
-    container_name: "lnmp-nginx"
+    container_name: "canren-lnmp-nginx"
     ports:
       - "80:80"
     depends_on:
@@ -130,7 +132,7 @@ services:
 
   mysql-db:
     build: ./mysql
-    container_name: "lnmp-mysql"
+    container_name: "canren-lnmp-mysql"
     ports:
       - "3306:3306"
     networks:
@@ -147,9 +149,9 @@ services:
     restart: always
     command: "--character-set-server=utf8"
 
-  redis-db: # 不用redis可以删除配置
+  redis-db:
     build: ./redis
-    container_name: "lnmp-redis"
+    container_name: "canren-lnmp-redis"
     ports:
       - "6379:6379"
     networks:
@@ -158,11 +160,13 @@ services:
       - ../data/redis:/data
     restart: always
 
-  mongo-db: # 不用mongo可以删除配置
+  mongo-db:
     build: ./mongo
-    container_name: "lnmp-mongo"
+    container_name: "canren-lnmp-mongo"
     ports:
       - "27017:27017"
+    networks:
+      - "lnmp"
     volumes:
       - ../data/mongo:/data:rw
       - ../logs/mongo:/var/log/mongodb:rw
@@ -170,15 +174,17 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: 123456
-    
+    restart: always
+
   memcached:
-      build: ./memcached
-      container_name: "canren-lnmp-memcached"
-      ports:
-        - "11211:11211"
-      networks:
-        - "lnmp" 
-      command: "-m 128"
+    build: ./memcached
+    container_name: "canren-lnmp-memcached"
+    ports:
+      - "11211:11211"
+    networks:
+      - "lnmp"
+    command: "-m 128"
+    restart: always
 
 networks:
   lnmp:
