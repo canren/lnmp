@@ -12,63 +12,66 @@ $ cd lnmp
 $ ./lnmp build # 中间断开命令重试即可
 ```
 
-### linux 环境
+### windows 环境
 ```
 windows环境脚本还在编写当中
 ```
 ------------------------
 ### 容器相关命令
 
-> container.sh shell
+> lnmp shell
 ```bash
 ~/dockerapps/lnmp # shell路径
-$ container.sh build # 容器打包
-$ container.sh start # 开启容器
-$ container.sh stop # 关闭容器
-$ container.sh restart # 容器重启
-$ container.sh kill # 删除容器
+$ lnmp build    # 容器打包
+$ lnmp start    # 开启容器
+$ lnmp stop     # 关闭容器
+$ lnmp restart  # 容器重启
+$ lnmp kill     # 删除容器
 ```
 
 ## 目录
 ```
 ~/dockerapps/
 	lnmp/
-		memcached/
-			Dockerfile
-		mongo/
-			Dockerfile
-			mongod.conf
-		mysql/
-			Dockerfile
-			my.cnf
-		nginx/
-			conf.d/
-				default.conf
-			Dockerfile
-			nginx.conf
-		php56/
-			pkg/
-			    memcache.taz # php7 memcache扩展
-			Dockerfile
-			php.ini
-			php-dev.ini
-			php-fpm.conf
-		php72/
-			pkg/
-			Dockerfile
-			php.ini
-			php-dev.ini
-			php-fpm.conf
-		redis/
-			Dockerfile	
-		docker-compose.yml
-		container.sh
+	    data/   # 数据文件夹
+	    logs/   # 日志文件夹
+	    files/
+            memcached/
+                Dockerfile
+            mongo/
+                Dockerfile
+                mongod.conf
+            mysql/
+                Dockerfile
+                my.cnf
+            nginx/
+                conf.d/
+                    default.conf
+                Dockerfile
+                nginx.conf
+            php56/
+                pkg/
+                    memcache.taz # php7 memcache扩展
+                Dockerfile
+                php.ini
+                php-dev.ini
+                php-fpm.conf
+            php72/
+                pkg/
+                Dockerfile
+                php.ini
+                php-dev.ini
+                php-fpm.conf
+            redis/
+                Dockerfile	
+            docker-compose.yml
 	app/
 		index.php
-		mongo.php
-		mysql.php
-		phpinfo.php
-		redis.php
+		mongo.php    # mongo测试文件
+		mysql.php    # mysql测试文件
+		phpinfo.php  # phpinfo
+		redis.php    # redis测试文件
+		memcache.php # memcache测试文件
 	xxx/
 	xxx2/
 ```
@@ -195,28 +198,21 @@ ENV TZ=Asia/shanghai
 RUN ln -snf /usr/share/zone/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # 更新安装依赖包和php核心扩展
-RUN apt-get update && apt-get install -y \
-    git \
-    libfreetype6-dev \
-    libjpeg62-turbo-dev \
-    libpng-dev \
+RUN apt-get update && apt-get install -y git libfreetype6-dev libjpeg62-turbo-dev libpng-dev \
     && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
-    && docker-php-ext-install -j$(nproc) gd \
-    && docker-php-ext-install zip \
-    && docker-php-ext-install pdo_mysql \
-    && docker-php-ext-install opcache \
-    && docker-php-ext-install mysqli \
+    && docker-php-ext-install -j$(nproc) gd zip pdo_mysql opcache mysqli \
     && rm -r /var/lib/apt/lists/*
 
 RUN pecl install redis && echo "extension=redis.so" > /usr/local/etc/php/conf.d/redis.ini
 RUN pecl install mongodb && echo "extension=mongodb.so" > /usr/local/etc/php/conf.d/mongodb.ini
+RUN pecl install memcache && echo "extension=memcache.so" > /usr/local/etc/php/conf.d/memcache.ini
 
 # 安装 Composer
 ENV COMPOSER_HOME /root/composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 ENV PATH $COMPOSER_HOME/vendor/bin:$PATH
 
-WORKDIR /data
+WORKDIR /data/www
 
 RUN usermod -u 1000 www-data
 ```
@@ -230,29 +226,30 @@ MAINTAINER canren "bestsxf@gmail.com"
 ENV TZ=Asia/shanghai
 RUN ln -snf /usr/share/zone/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
+# copy文件
+COPY ./pkg/memcache.tgz /home/memcache.tgz
+
 # 更新安装依赖包和php核心扩展
-RUN apt-get update && apt-get install -y \
-    git \
-    libfreetype6-dev \
-    libjpeg62-turbo-dev \
-    libpng-dev \
+RUN apt-get update && apt-get install -y git libfreetype6-dev libjpeg62-turbo-dev libpng-dev \
     && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
-    && docker-php-ext-install -j$(nproc) gd \
-    && docker-php-ext-install zip \
-    && docker-php-ext-install pdo_mysql \
-    && docker-php-ext-install opcache \
-    && docker-php-ext-install mysqli \
+    && docker-php-ext-install -j$(nproc) gd zip pdo_mysql opcache mysqli \
     && rm -r /var/lib/apt/lists/*
 
 RUN pecl install redis && echo "extension=redis.so" > /usr/local/etc/php/conf.d/redis.ini
 RUN pecl install mongodb && echo "extension=mongodb.so" > /usr/local/etc/php/conf.d/mongodb.ini
-
+RUN pecl install igbinary && echo "extension=igbinary.so" > /usr/local/etc/php/conf.d/igbinary.ini
+RUN apt-get update && apt-get install -y libmemcached-dev zlib1g zlib1g-dev && rm -r /var/lib/apt/lists/*
+RUN pecl install memcached && echo "extension=memcached.so" > /usr/local/etc/php/conf.d/memcached.ini
+RUN cd /home && tar -zxvf /home/memcache.tgz -C /home/ && cd /home/memcache \
+    && /usr/local/bin/phpize && ./configure --with-php-config=/usr/local/bin/php-config \
+    && make && make install && echo "extension=memcache.so" > /usr/local/etc/php/conf.d/memcache.ini \
+    && rm -rf /home/mecache && rm -rf /home/mecache.taz
 # 安装 Composer
 ENV COMPOSER_HOME /root/composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 ENV PATH $COMPOSER_HOME/vendor/bin:$PATH
 
-WORKDIR /data
+WORKDIR /data/www
 
 RUN usermod -u 1000 www-data
 ```
@@ -265,6 +262,8 @@ MAINTAINER canren "bestsxf@gmail.com"
 # 设置时区
 ENV TZ=Asia/Shanghai
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+WORKDIR /data/www
 ```
 #### mysql
 >  mysql Decokerfile相关
