@@ -1,2 +1,4 @@
-FROM memcached:1.5-alpine
+ARG LNMP_MEMCACHED_VERSION
+
+FROM memcached:$LNMP_MEMCACHED_VERSION
 MAINTAINER canren "bestsxf@gmail.com"

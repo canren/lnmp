@@ -1,22 +1,5 @@
 version: '3.7'
 services:
-  php-fpm56: # 只用php-fpm72可以删除php-fpm56
-    build:
-      context: php56/
-      args:
-        LNMP_PHP56_VERSION: $LNMP_PHP56_VERSION
-    container_name: "canren-lnmp-php56"
-    ports:
-      - "9001:9000"
-    networks:
-      - "lnmp"
-    volumes:
-      - ../../../dockerapps:/data/www:rw
-      - ./php56/php-dev.ini:/usr/local/etc/php/php.ini:ro
-      - ./php56/php-fpm.conf:/usr/local/etc/php-fpm.conf:ro
-      - ../logs/php-fpm56:/var/log/php-fpm:rw
-    restart: always
-    command: php-fpm
 
   php-fpm72:
     build:
@@ -77,52 +60,6 @@ services:
       MYSQL_PASSWORD: test
     restart: always
     command: "--character-set-server=utf8"
-
-  redis-db:
-    build:
-      context: redis/
-      args:
-        LNMP_REDIS_VERSION: $LNMP_REDIS_VERSION
-    container_name: "canren-lnmp-redis"
-    ports:
-      - "6379:6379"
-    networks:
-      - "lnmp"
-    volumes:
-      - ../data/redis:/data
-    restart: always
-
-  mongo-db:
-    build:
-      context: mongo/
-      args:
-        LNMP_MONGO_VERSION: $LNMP_MONGO_VERSION
-    container_name: "canren-lnmp-mongo"
-    ports:
-      - "27017:27017"
-    networks:
-      - "lnmp"
-    volumes:
-      - ../data/mongo:/data:rw
-      - ../logs/mongo:/var/log/mongodb:rw
-      - ./mongo/mongod.conf:/etc/mongod.conf:ro
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: 123456
-    restart: always
-
-  memcached:
-    build:
-      context: memcached/
-      args:
-        LNMP_MEMCACHED_VERSION: $LNMP_MEMCACHED_VERSION
-    container_name: "canren-lnmp-memcached"
-    ports:
-      - "11211:11211"
-    networks:
-      - "lnmp"
-    command: "-m 128"
-    restart: always
 
 networks:
   lnmp:

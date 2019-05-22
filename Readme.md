@@ -4,14 +4,35 @@
 ## 使用
 
 ### linux 环境
+> 下面是我写的几个dockerfile启动脚本，如果自己有需要可以自己搭配环境
+#### 基础的nginx+php56+php72+mysql+reids+mongo+memcached配置
 ```bash
 $ mkdir ~/dockerapps # ln -s 自己的工作目录过来
 $ cd ~/dockerapps
 $ git clone https://github.com/canren/lnmp.git
 $ cd lnmp
+$ chmod -R 0755 ./lnmp
 $ ./lnmp build # 中间断开命令重试即可
 ```
-
+#### 基础的nginx+php72+mysql配置
+```bash
+$ mkdir ~/dockerapps # ln -s 自己的工作目录过来
+$ cd ~/dockerapps
+$ git clone https://github.com/canren/lnmp.git
+$ cd lnmp
+$ chmod -R 0755 ./lnmp72
+$ ./lnmp72 build # 中间断开命令重试即可
+```
+>这个需要首先配置elk docker脚本,相关[https://github.com/canren/elk](https://github.com/canren/elk)，`elk脚本启动完成之后，再启动该脚本`
+#### 基础的nginx+php72+mysql配置，带nginx日志的收集的分析的脚本
+```bash
+$ mkdir ~/dockerapps # ln -s 自己的工作目录过来
+$ cd ~/dockerapps
+$ git clone https://github.com/canren/lnmp.git
+$ cd lnmp
+$ chmod -R 0755 ./lnmp72_filebeat
+$ ./lnmp72_filebeat build # 中间断开命令重试即可
+```
 ### windows 环境
 ```
 windows环境脚本还在编写当中
@@ -32,10 +53,13 @@ $ lnmp kill     # 删除容器
 ## 目录
 ```
 ~/dockerapps/
-	lnmp/
-	    data/   # 数据文件夹
-	    logs/   # 日志文件夹
-	    files/
+    lnmp/
+        data/   # 数据文件夹
+        logs/   # 日志文件夹
+        files/
+            filebeat/
+	            Dockerfile
+	            filebeat.yml
             memcached/
                 Dockerfile
             mongo/
@@ -64,18 +88,24 @@ $ lnmp kill     # 删除容器
                 php-fpm.conf
             redis/
                 Dockerfile	
-            docker-compose.yml
-	app/
-		index.php
-		mongo.php    # mongo测试文件
-		mysql.php    # mysql测试文件
-		phpinfo.php  # phpinfo
-		redis.php    # redis测试文件
-		memcache.php # memcache测试文件
-	xxx/
-	xxx2/
+            docker-compose.yml  # 基础的nginx+php56+php72+mysql+reids+mongo+memcached配置
+            docker-lnmp72.yml    # 基础的nginx+php72+mysql配置
+            docker-lnmp72-filebeat.yml    # 基础的nginx+php72+mysql配置，带nginx日志的收集的分析的脚本，要结合https://github.com/canren/elk使用
+        .env        # 配置文件
+        lnmp        # 启动脚本
+        lnmp72        # 启动脚本
+        Readme.md   # 帮助文档
+    app/
+        index.php
+        mongo.php    # mongo测试文件
+        mysql.php    # mysql测试文件
+        phpinfo.php  # phpinfo
+        redis.php    # redis测试文件
+        memcache.php # memcache测试文件
+    xxx/
+    xxx2/
 ```
-
+地址：[https://github.com/canren/elk](https://github.com/canren/elk)
 ------------------------
 
 ### docker-compose相关
@@ -84,7 +114,10 @@ $ lnmp kill     # 删除容器
 version: '3.7'
 services:
   php-fpm56: # 只用php-fpm72可以删除php-fpm56
-    build: ./php56
+    build:
+      context: php56/
+      args:
+        LNMP_PHP56_VERSION: $LNMP_PHP56_VERSION
     container_name: "canren-lnmp-php56"
     ports:
       - "9001:9000"
@@ -99,7 +132,10 @@ services:
     command: php-fpm
 
   php-fpm72:
-    build: ./php72
+    build:
+      context: php72/
+      args:
+        LNMP_PHP72_VERSION: $LNMP_PHP72_VERSION
     container_name: "canren-lnmp-php72"
     ports:
       - "9000:9000"
@@ -114,7 +150,10 @@ services:
     command: php-fpm
 
   nginx:
-    build: ./nginx
+    build:
+      context: nginx/
+      args:
+        LNMP_NGINX_VERSION: $LNMP_NGINX_VERSION
     container_name: "canren-lnmp-nginx"
     ports:
       - "80:80"
@@ -131,7 +170,10 @@ services:
     command: nginx -g 'daemon off;'
 
   mysql-db:
-    build: ./mysql
+    build:
+      context: mysql/
+      args:
+        LNMP_MYSQL_VERSION: $LNMP_MYSQL_VERSION
     container_name: "canren-lnmp-mysql"
     ports:
       - "3306:3306"
@@ -150,7 +192,10 @@ services:
     command: "--character-set-server=utf8"
 
   redis-db:
-    build: ./redis
+    build:
+      context: redis/
+      args:
+        LNMP_REDIS_VERSION: $LNMP_REDIS_VERSION
     container_name: "canren-lnmp-redis"
     ports:
       - "6379:6379"
@@ -161,7 +206,10 @@ services:
     restart: always
 
   mongo-db:
-    build: ./mongo
+    build:
+      context: mongo/
+      args:
+        LNMP_MONGO_VERSION: $LNMP_MONGO_VERSION
     container_name: "canren-lnmp-mongo"
     ports:
       - "27017:27017"
@@ -177,7 +225,10 @@ services:
     restart: always
 
   memcached:
-    build: ./memcached
+    build:
+      context: memcached/
+      args:
+        LNMP_MEMCACHED_VERSION: $LNMP_MEMCACHED_VERSION
     container_name: "canren-lnmp-memcached"
     ports:
       - "11211:11211"
@@ -190,13 +241,173 @@ networks:
   lnmp:
     driver: bridge
 ```
+
+#### docker-lnmp72.yml
+```dsconfig
+version: '3.7'
+services:
+
+  php-fpm72:
+    build:
+      context: php72/
+      args:
+        LNMP_PHP72_VERSION: $LNMP_PHP72_VERSION
+    container_name: "canren-lnmp-php72"
+    ports:
+      - "9000:9000"
+    networks:
+      - "lnmp"
+    volumes:
+      - ../../../dockerapps:/data/www:rw
+      - ./php72/php-dev.ini:/usr/local/etc/php/php.ini:ro
+      - ./php72/php-fpm.conf:/usr/local/etc/php-fpm.conf:ro
+      - ../logs/php-fpm72:/var/log/php-fpm:rw
+    restart: always
+    command: php-fpm
+
+  nginx:
+    build:
+      context: nginx/
+      args:
+        LNMP_NGINX_VERSION: $LNMP_NGINX_VERSION
+    container_name: "canren-lnmp-nginx"
+    ports:
+      - "80:80"
+    depends_on:
+      - php-fpm72
+    networks:
+      - "lnmp"
+    volumes:
+      - ../../../dockerapps:/data/www:rw
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ../logs/nginx:/var/log/nginx:rw
+    restart: always
+    command: nginx -g 'daemon off;'
+
+  mysql-db:
+    build:
+      context: mysql/
+      args:
+        LNMP_MYSQL_VERSION: $LNMP_MYSQL_VERSION
+    container_name: "canren-lnmp-mysql"
+    ports:
+      - "3306:3306"
+    networks:
+      - "lnmp"
+    volumes:
+      - ../data/mysql:/var/lib/mysql:rw
+      - ../logs/mysql:/var/lib/mysql-logs:rw
+      - ./mysql/my.cnf:/etc/mysql/conf.d/my.cnf:ro
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: db_test
+      MYSQL_USER: test
+      MYSQL_PASSWORD: test
+    restart: always
+    command: "--character-set-server=utf8"
+
+networks:
+  lnmp:
+    driver: bridge
+```
+
+#### docker-lnmp72-filebeat.yml
+```dsconfig
+version: '3.7'
+services:
+
+  php-fpm72:
+    build:
+      context: php72/
+      args:
+        LNMP_PHP72_VERSION: $LNMP_PHP72_VERSION
+    container_name: "canren-lnmp-php72"
+    ports:
+      - "9000:9000"
+    networks:
+      - "lnmp"
+    volumes:
+      - ../../../dockerapps:/data/www:rw
+      - ./php72/php-dev.ini:/usr/local/etc/php/php.ini:ro
+      - ./php72/php-fpm.conf:/usr/local/etc/php-fpm.conf:ro
+      - ../logs/php-fpm72:/var/log/php-fpm:rw
+    restart: always
+    command: php-fpm
+
+  nginx:
+    build:
+      context: nginx/
+      args:
+        LNMP_NGINX_VERSION: $LNMP_NGINX_VERSION
+    container_name: "canren-lnmp-nginx"
+    ports:
+      - "80:80"
+    depends_on:
+      - php-fpm72
+    networks:
+      - "lnmp"
+    volumes:
+      - ../../../dockerapps:/data/www:rw
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ../logs/nginx:/var/log/nginx:rw
+    restart: always
+    command: nginx -g 'daemon off;'
+
+  mysql-db:
+    build:
+      context: mysql/
+      args:
+        LNMP_MYSQL_VERSION: $LNMP_MYSQL_VERSION
+    container_name: "canren-lnmp-mysql"
+    ports:
+      - "3306:3306"
+    networks:
+      - "lnmp"
+    volumes:
+      - ../data/mysql:/var/lib/mysql:rw
+      - ../logs/mysql:/var/lib/mysql-logs:rw
+      - ./mysql/my.cnf:/etc/mysql/conf.d/my.cnf:ro
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: db_test
+      MYSQL_USER: test
+      MYSQL_PASSWORD: test
+    restart: always
+    command: "--character-set-server=utf8"
+
+  filebeat:
+    build:
+      context: filebeat/
+      args:
+        ELK_VERSION: $ELK_VERSION
+    container_name: "canren-lnmp-filebeat"
+    depends_on:
+      - nginx
+    networks:
+      - "lnmp"
+      - "elk"
+    volumes:
+      - ../logs/nginx:/var/log/nginx:ro
+      - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+    restart: always
+
+networks:
+  lnmp:
+    driver: bridge
+  elk:
+    driver: bridge
+```
 --------------------
 
 ### Dockerfile相关
 #### php5.6
 >  php5.6 Decokerfile相关
 ```dsconfig
-FROM php:5.6-fpm
+ARG LNMP_PHP56_VERSION
+
+FROM php:$LNMP_PHP56_VERSION
 MAINTAINER canren "bestsxf@gmail.com"
 
 # 设置时区
@@ -225,7 +436,9 @@ RUN usermod -u 1000 www-data
 #### php7.2
 >  php7.2 Decokerfile相关
 ```dsconfig
-FROM php:7.2-fpm
+ARG LNMP_PHP72_VERSION
+
+FROM php:$LNMP_PHP72_VERSION
 MAINTAINER canren "bestsxf@gmail.com"
 
 # 设置时区
@@ -262,7 +475,9 @@ RUN usermod -u 1000 www-data
 #### nginx
 >  nginx Decokerfile相关
 ```dsconfig
-FROM nginx:1.15-alpine
+ARG LNMP_NGINX_VERSION
+
+FROM nginx:$LNMP_NGINX_VERSION
 MAINTAINER canren "bestsxf@gmail.com"
 
 # 设置时区
@@ -271,20 +486,24 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 WORKDIR /data/www
 ```
-#### mysql
->  mysql Decokerfile相关
+#### redis
+>  reids Decokerfile相关
 ```dsconfig
-FROM mysql:5.7
+ARG LNMP_REDIS_VERSION
+
+FROM redis:$LNMP_REDIS_VERSION
 MAINTAINER canren "bestsxf@gmail.com"
 
 # 设置时区
 ENV TZ=Asia/Shanghai
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 ```
-#### redis
->  reids Decokerfile相关
+#### mysql
+>  mysql Decokerfile相关
 ```dsconfig
-FROM redis:5-alpine
+ARG LNMP_MYSQL_VERSION
+
+FROM mysql:$LNMP_MYSQL_VERSION
 MAINTAINER canren "bestsxf@gmail.com"
 
 # 设置时区
@@ -294,16 +513,28 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 #### mongo
 >  mongo Decokerfile相关
 ```dsconfig
-FROM mongo:3.6-xenial
+ARG LNMP_MONGO_VERSION
+
+FROM mongo:$LNMP_MONGO_VERSION
 MAINTAINER canren "bestsxf@gmail.com"
 
 # 设置时区
 ENV TZ=Asia/Shanghai
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 ```
-#### memcache
->  memcache Decokerfile相关
+#### memcached
+>  memcached Decokerfile相关
 ```dsconfig
-FROM memcached:1.5-alpine
+ARG LNMP_MEMCACHED_VERSION
+
+FROM memcached:$LNMP_MEMCACHED_VERSION
+MAINTAINER canren "bestsxf@gmail.com"
+```
+#### filebeat
+>  filebeat Decokerfile相关
+```dsconfig
+ARG ELK_VERSION
+
+FROM docker.elastic.co/beats/filebeat:$ELK_VERSION
 MAINTAINER canren "bestsxf@gmail.com"
 ```

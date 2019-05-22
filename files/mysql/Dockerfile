@@ -1,4 +1,6 @@
-FROM mysql:5.7
+ARG LNMP_MYSQL_VERSION
+
+FROM mysql:$LNMP_MYSQL_VERSION
 MAINTAINER canren "bestsxf@gmail.com"
 
 # 设置时区

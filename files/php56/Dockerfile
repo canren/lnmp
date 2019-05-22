@@ -1,4 +1,6 @@
-FROM php:5.6-fpm
+ARG LNMP_PHP56_VERSION
+
+FROM php:$LNMP_PHP56_VERSION
 MAINTAINER canren "bestsxf@gmail.com"
 
 # 设置时区

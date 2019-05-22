@@ -1,4 +1,6 @@
-FROM php:7.2-fpm
+ARG LNMP_PHP72_VERSION
+
+FROM php:$LNMP_PHP72_VERSION
 MAINTAINER canren "bestsxf@gmail.com"
 
 # 设置时区
