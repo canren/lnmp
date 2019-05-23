@@ -2,7 +2,8 @@
 
 [TOC]
 ## 使用
-
+###
+> php项目路径设置 .env文件WORKSPACES参数 默认=../../../dockerapps:/data/www:rw 相对路径、绝对路径均可
 ### linux 环境
 > 下面是我写的几个dockerfile启动脚本，如果自己有需要可以自己搭配环境
 #### 基础的nginx+php56+php72+mysql+reids+mongo+memcached配置

@@ -1,4 +1,4 @@
 ARG LNMP_MEMCACHED_VERSION
 
-FROM memcached:$LNMP_MEMCACHED_VERSION
+FROM memcached:$LNMP_MEMCACHED_dockerVERSION
 MAINTAINER canren "bestsxf@gmail.com"
