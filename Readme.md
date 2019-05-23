@@ -44,6 +44,7 @@ windows环境脚本还在编写当中
 > lnmp shell
 ```bash
 ~/dockerapps/lnmp # shell路径
+$ lnmp test     # 容器测试，不会生成images镜像
 $ lnmp build    # 容器打包
 $ lnmp start    # 开启容器
 $ lnmp stop     # 关闭容器

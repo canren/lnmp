@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# docker 镜像测试
+docker_test() {
+    docker_kill
+    docker-compose -f ./files/docker-compose.yml up
+}
+
 # docker 镜像打包
 docker_build() {
     docker_kill
@@ -54,6 +60,10 @@ stop)
 
 restart)
         docker_restart
+        ;;
+
+test)
+        docker_test
         ;;
 
 build)
