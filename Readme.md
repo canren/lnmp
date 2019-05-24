@@ -23,8 +23,8 @@ $ cd lnmp
 $ chmod -R 0755 ./lnmp72
 $ ./lnmp72 build # 中间断开命令重试即可
 ```
->这个需要首先配置elk docker脚本,相关[https://github.com/canren/elk](https://github.com/canren/elk)，`elk脚本启动完成之后，再启动该脚本`
 #### 基础的nginx+php72+mysql配置，带nginx日志的收集的分析的脚本
+>这个需要首先配置elk docker脚本,相关[https://github.com/canren/elk](https://github.com/canren/elk)，`elk脚本启动完成之后，再启动该脚本`
 ```bash
 $ mkdir ~/dockerapps # ln -s 自己的工作目录过来
 $ cd ~/dockerapps
