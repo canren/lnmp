@@ -24,7 +24,7 @@ RUN pecl install memcached && echo "extension=memcached.so" > /usr/local/etc/php
 RUN cd /home && tar -zxvf /home/memcache.tgz -C /home/ && cd /home/memcache \
     && /usr/local/bin/phpize && ./configure --with-php-config=/usr/local/bin/php-config \
     && make && make install && echo "extension=memcache.so" > /usr/local/etc/php/conf.d/memcache.ini \
-    && rm -rf /home/mecache && rm -rf /home/mecache.taz
+    && rm -rf /home/mecache && rm -rf /home/memcache.taz
 # 安装 Composer
 ENV COMPOSER_HOME /root/composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer

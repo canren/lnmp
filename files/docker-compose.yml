@@ -14,6 +14,7 @@ services:
       - $WORKSPACES
       - ./php56/php-dev.ini:/usr/local/etc/php/php.ini:ro
       - ./php56/php-fpm.conf:/usr/local/etc/php-fpm.conf:ro
+      - ./php56/pkg:/home:ro
       - ../logs/php-fpm56:/var/log/php-fpm:rw
     restart: always
     command: php-fpm
@@ -32,6 +33,7 @@ services:
       - $WORKSPACES
       - ./php72/php-dev.ini:/usr/local/etc/php/php.ini:ro
       - ./php72/php-fpm.conf:/usr/local/etc/php-fpm.conf:ro
+      - ./php72/pkg:/home:ro
       - ../logs/php-fpm72:/var/log/php-fpm:rw
     restart: always
     command: php-fpm
