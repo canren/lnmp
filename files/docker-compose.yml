@@ -69,7 +69,7 @@ services:
     volumes:
       - ../data/mysql:/var/lib/mysql:rw
       - ../logs/mysql:/var/lib/mysql-logs:rw
-      - ./mysql/my.cnf:/etc/mysql/conf.d/my.cnf:ro
+      - ./mysql/my.cnf:/etc/my.cnf:ro
     environment:
       MYSQL_ROOT_PASSWORD: 123456
       MYSQL_DATABASE: db_test
@@ -90,6 +90,8 @@ services:
       - "lnmp"
     volumes:
       - ../data/redis:/data
+      - ./redis/redis.conf:/etc/redis.conf:ro
+    command: "/etc/redis.conf"
     restart: always
 
   mongo-db:

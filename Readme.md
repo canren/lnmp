@@ -91,7 +91,7 @@ $ lnmp kill     # 删除容器
                 php.ini
                 php-dev.ini
                 php-fpm.conf
-            redis/
+            redis/ # 默认密码为123456
                 Dockerfile	
             docker-compose.yml  # 基础的nginx+php56+php72+mysql+reids+mongo+memcached配置
             docker-lnmp72.yml    # 基础的nginx+php72+mysql配置
