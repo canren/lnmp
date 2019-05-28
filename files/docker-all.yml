@@ -82,7 +82,7 @@ services:
     build:
       context: redis/
       args:
-        LNMP_REDIS_VERSION: $LNMP_REDIS_VERSION
+        REDIS_VERSION: $REDIS_VERSION
     container_name: "canren-lnmp-redis"
     ports:
       - "6379:6379"
@@ -98,7 +98,7 @@ services:
     build:
       context: mongo/
       args:
-        LNMP_MONGO_VERSION: $LNMP_MONGO_VERSION
+        MONGO_VERSION: $MONGO_VERSION
     container_name: "canren-lnmp-mongo"
     ports:
       - "27017:27017"
@@ -117,7 +117,7 @@ services:
     build:
       context: memcached/
       args:
-        LNMP_MEMCACHED_VERSION: $LNMP_MEMCACHED_VERSION
+        MEMCACHED_VERSION: $MEMCACHED_VERSION
     container_name: "canren-lnmp-memcached"
     ports:
       - "11211:11211"
@@ -125,6 +125,23 @@ services:
       - "lnmp"
     command: "-m 128"
     restart: always
+
+  neo4j-db: # 默认密码是neo4j
+      build:
+        context: neo4j/
+        args:
+          NEO4J_VERSION: $NEO4J_VERSION
+      container_name: "canren-lnmp-neo4j"
+      ports:
+        - "7474:7474"
+        - "7687:7687"
+      networks:
+        - "lnmp"
+      volumes:
+        - ./neo4j/conf:/var/lib/neo4j/conf
+        - ../data/neo4j:/data:rw
+        - ../logs/neo4j:/logs:rw
+      restart: always
 
 networks:
   lnmp:

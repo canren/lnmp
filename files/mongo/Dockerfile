@@ -1,6 +1,6 @@
-ARG LNMP_MONGO_VERSION
+ARG MONGO_VERSION
 
-FROM mongo:$LNMP_MONGO_VERSION
+FROM mongo:$MONGO_VERSION
 MAINTAINER canren "bestsxf@gmail.com"
 
 # 设置时区

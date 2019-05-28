@@ -65,7 +65,7 @@ services:
     build:
       context: redis/
       args:
-        LNMP_REDIS_VERSION: $LNMP_REDIS_VERSION
+        REDIS_VERSION: $REDIS_VERSION
     container_name: "canren-lnmp-redis"
     ports:
       - "6379:6379"

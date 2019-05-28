@@ -1,0 +1,4 @@
+ARG NEO4J_VERSION
+
+FROM neo4j:$NEO4J_VERSION
+MAINTAINER canren "bestsxf@gmail.com"
