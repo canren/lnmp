@@ -17,11 +17,6 @@ RUN pecl install redis && echo "extension=redis.so" > /usr/local/etc/php/conf.d/
 RUN pecl install mongodb && echo "extension=mongodb.so" > /usr/local/etc/php/conf.d/mongodb.ini
 RUN pecl install memcache && echo "extension=memcache.so" > /usr/local/etc/php/conf.d/memcache.ini
 
-# 安装 Composer
-ENV COMPOSER_HOME /root/composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-ENV PATH $COMPOSER_HOME/vendor/bin:$PATH
-
 WORKDIR /data/www
 
 RUN usermod -u 1000 www-data
