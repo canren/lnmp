@@ -45,6 +45,7 @@ services:
     ports:
       - "80:80"
     depends_on:
+      - php-fpm56
       - php-fpm72
     networks:
       - "lnmp"
@@ -57,21 +58,24 @@ services:
     command: nginx -g 'daemon off;'
 
   openresty:
-      build:
-        context: openresty/
-        args:
-          LNMP_OPENRESTY_VERSION: $LNMP_OPENRESTY_VERSION
-      container_name: "canren-lnmp-openresty"
-      ports:
-        - "8080:80"
-      networks:
-        - "lnmp"
-      volumes:
-        - $WORKSPACES
-        - ./nginx/conf.d:/etc/nginx/conf.d:ro
-        - ./nginx/nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf:ro
-        - ../logs/nginx:/usr/local/openresty/nginx/logs:rw
-      restart: always
+    build:
+      context: openresty/
+      args:
+        LNMP_OPENRESTY_VERSION: $LNMP_OPENRESTY_VERSION
+    container_name: "canren-lnmp-openresty"
+    ports:
+      - "8080:80"
+    depends_on:
+      - php-fpm56
+      - php-fpm72
+    networks:
+      - "lnmp"
+    volumes:
+      - $WORKSPACES
+      - ./openresty/conf.d:/etc/nginx/conf.d:ro
+      - ./openresty/nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf:ro
+      - ../logs/openresty:/usr/local/openresty/nginx/logs:rw
+    restart: always
 
   mysql-db:
     build:

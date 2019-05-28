@@ -20,21 +20,23 @@ services:
     command: php-fpm
 
   openresty:
-      build:
-        context: openresty/
-        args:
-          LNMP_OPENRESTY_VERSION: $LNMP_OPENRESTY_VERSION
-      container_name: "canren-lnmp-openresty"
-      ports:
-        - "80:80"
-      networks:
-        - "lnmp"
-      volumes:
-        - $WORKSPACES
-        - ./openresty/conf.d:/etc/nginx/conf.d:ro
-        - ./openresty/nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf:ro
-        - ../logs/openresty:/usr/local/openresty/nginx/logs:rw
-      restart: always
+    build:
+      context: openresty/
+      args:
+        LNMP_OPENRESTY_VERSION: $LNMP_OPENRESTY_VERSION
+    container_name: "canren-lnmp-openresty"
+    ports:
+      - "80:80"
+    networks:
+      - "lnmp"
+    depends_on:
+      - php-fpm72
+    volumes:
+      - $WORKSPACES
+      - ./openresty/conf.d:/etc/nginx/conf.d:ro
+      - ./openresty/nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf:ro
+      - ../logs/openresty:/usr/local/openresty/nginx/logs:rw
+    restart: always
 
   mysql-db:
     build:

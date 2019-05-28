@@ -29,6 +29,8 @@ services:
       - "80:80"
     networks:
       - "lnmp"
+    depends_on:
+      - php-fpm72
     volumes:
       - $WORKSPACES
       - ./openresty/conf.d:/etc/nginx/conf.d:ro

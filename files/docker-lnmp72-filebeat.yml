@@ -29,6 +29,8 @@ services:
       - "80:80"
     networks:
       - "lnmp"
+    depends_on:
+      - php-fpm72
     volumes:
       - $WORKSPACES
       - ./openresty/conf.d:/etc/nginx/conf.d:ro
@@ -58,6 +60,22 @@ services:
     restart: always
     command: "--character-set-server=utf8"
 
+  redis-db:
+    build:
+      context: redis/
+      args:
+        REDIS_VERSION: $REDIS_VERSION
+    container_name: "canren-lnmp-redis"
+    ports:
+      - "6379:6379"
+    networks:
+      - "lnmp"
+    volumes:
+      - ../data/redis:/data
+      - ./redis/redis.conf:/etc/redis.conf:ro
+    command: "/etc/redis.conf"
+    restart: always
+
   filebeat:
     build:
       context: filebeat/
@@ -65,12 +83,14 @@ services:
         ELK_VERSION: $ELK_VERSION
     container_name: "canren-lnmp-filebeat"
     depends_on:
-      - nginx
+      - openresty
     networks:
       - "lnmp"
       - "elk"
     volumes:
       - ../logs/nginx:/var/log/nginx:ro
+      - ../logs/openresty:/var/log/openresty:ro
+      - ../logs/filebeat:/usr/share/filebeat/logs:rw
       - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
     restart: always
 
@@ -78,4 +98,3 @@ networks:
   lnmp:
     driver: bridge
   elk:
-    driver: bridge
