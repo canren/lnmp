@@ -1,4 +1,4 @@
-version: '3.7'
+version: '3.3'
 services:
   php-fpm56: # 只用php-fpm72可以删除php-fpm56
     build:
