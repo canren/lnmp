@@ -33,11 +33,6 @@ $ docker-compose pause    # Pause services
             mysql/
                 Dockerfile
                 my.cnf
-            nginx/
-                conf.d/
-                    default.conf
-                Dockerfile
-                nginx.conf
             openresty/ # 基于 NGINX 和 LuaJIT 的 Web 平台
                 conf.d/
                     default.conf
