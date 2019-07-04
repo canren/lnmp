@@ -20,6 +20,7 @@ RUN pecl install redis && echo "extension=redis.so" > /usr/local/etc/php/conf.d/
 RUN pecl install mongodb && echo "extension=mongodb.so" > /usr/local/etc/php/conf.d/mongodb.ini
 RUN pecl install igbinary && echo "extension=igbinary.so" > /usr/local/etc/php/conf.d/igbinary.ini
 RUN pecl install memcached && echo "extension=memcached.so" > /usr/local/etc/php/conf.d/memcached.ini
+RUN pecl install swoole && echo "extension=swoole.so" > /usr/local/etc/php/conf.d/swoole.ini
 
 # 编译扩展
 RUN cd /home && tar -zxvf /home/memcache.tgz -C /home/ && cd /home/memcache \
