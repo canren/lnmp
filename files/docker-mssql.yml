@@ -1,0 +1,23 @@
+version: '3.3'
+services:
+
+  mssql-db:
+      build:
+        context: mssql/
+        args:
+          MSSQL_VERSION: $MSSQL_VERSION
+      container_name: "canren-mssql"
+      ports:
+        - "1433:1433"
+      networks:
+        - "mssql"
+      volumes:
+        - ../data/mssql:/var/opt/mssql:rw
+      environment:
+        - ACCEPT_EULA=Y
+        - SA_PASSWORD=Qw123456
+      restart: always
+
+networks:
+  mssql:
+    driver: bridge
