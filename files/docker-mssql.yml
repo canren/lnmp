@@ -1,7 +1,7 @@
 version: '3.3'
 services:
 
-  mssql-db:
+  mssql-db: # 账号 SA  密码 Qw123456
       build:
         context: mssql/
         args:

@@ -30,6 +30,8 @@ $ docker-compose pause    # Pause services
             mongo/
                 Dockerfile
                 mongod.conf
+            mssql/ # sqlserver
+                Dockerfile
             mysql/
                 Dockerfile
                 my.cnf
