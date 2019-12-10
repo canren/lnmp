@@ -1,6 +1,6 @@
 ARG MSSQL_VERSION
 
-FROM mcr.microsoft.com/mssql/server:$MSSQL_VERSION
+FROM $MSSQL_VERSION
 MAINTAINER canren "bestsxf@gmail.com"
 
 # 设置时区

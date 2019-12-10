@@ -11,8 +11,8 @@ services:
         - "1433:1433"
       networks:
         - "mssql"
-      volumes:
-        - ../data/mssql:/var/opt/mssql:rw
+#      volumes:
+#        - ../data/mssql:/var/opt/mssql
       environment:
         - ACCEPT_EULA=Y
         - SA_PASSWORD=Qw123456

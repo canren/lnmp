@@ -76,6 +76,23 @@ services:
     command: "/etc/redis.conf"
     restart: always
 
+  neo4j-db: # 默认密码是neo4j
+    build:
+      context: neo4j/
+      args:
+        NEO4J_VERSION: $NEO4J_VERSION
+    container_name: "canren-lnmp-neo4j"
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    networks:
+      - "lnmp"
+    volumes:
+      - ./neo4j/conf:/var/lib/neo4j/conf
+      - ../data/neo4j:/data:rw
+      - ../logs/neo4j:/logs:rw
+    restart: always
+
 networks:
   lnmp:
     driver: bridge
