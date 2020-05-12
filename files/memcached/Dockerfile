@@ -1,4 +1,0 @@
-ARG MEMCACHED_VERSION
-
-FROM memcached:$MEMCACHED_VERSION
-MAINTAINER canren "bestsxf@gmail.com"

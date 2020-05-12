@@ -1,4 +1,5 @@
 ARG LNMP_PHP72_VERSION
+ARG SWOOLE_LICENSE_FILES
 
 FROM php:$LNMP_PHP72_VERSION
 MAINTAINER canren "bestsxf@gmail.com"
@@ -17,16 +18,17 @@ RUN apt-get update && apt-get install -y git libfreetype6-dev libjpeg62-turbo-de
     && rm -r /var/lib/apt/lists/*
 
 RUN pecl install redis && echo "extension=redis.so" > /usr/local/etc/php/conf.d/redis.ini
-RUN pecl install mongodb && echo "extension=mongodb.so" > /usr/local/etc/php/conf.d/mongodb.ini
 RUN pecl install igbinary && echo "extension=igbinary.so" > /usr/local/etc/php/conf.d/igbinary.ini
-RUN pecl install memcached && echo "extension=memcached.so" > /usr/local/etc/php/conf.d/memcached.ini
 RUN pecl install swoole && echo "extension=swoole.so" > /usr/local/etc/php/conf.d/swoole.ini
 
-# 编译扩展
-RUN cd /home && tar -zxvf /home/memcache.tgz -C /home/ && cd /home/memcache \
-    && /usr/local/bin/phpize && ./configure --with-php-config=/usr/local/bin/php-config \
-    && make && make install && echo "extension=memcache.so" > /usr/local/etc/php/conf.d/memcache.ini \
-    && rm -rf /home/memcache && rm -rf /home/memcache.taz
+RUN curl https://business.swoole.com/static/loader2.0.0/swoole_loader72.so > /usr/local/lib/php/extensions/no-debug-non-zts-20170718/swoole_loader72.so \
+    && { echo "extension=swoole_loader72.so"; \
+         echo "swoole_license_files=$SWOOLE_LICENSE_FILES"; } > /usr/local/etc/php/conf.d/swoole_loader.ini
+
+# 安装 Composer
+ENV COMPOSER_HOME /root/composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+ENV PATH $COMPOSER_HOME/vendor/bin:$PATH
 
 WORKDIR /data/www
 

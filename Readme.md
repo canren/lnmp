@@ -14,6 +14,8 @@ $ docker-compose restart  # Restart services
 $ docker-compose kill     # Kill containers
 $ docker-compose rm       # Remove stopped containers
 $ docker-compose pause    # Pause services
+$ docker-compose down    # Stop and Remove services
+$ docker exec -it ${NAMES} bash    # 进入docker镜像
 ```
 ## 目录
 ```
@@ -22,31 +24,18 @@ $ docker-compose pause    # Pause services
         data/   # 数据文件夹
         logs/   # 日志文件夹
         files/
-            filebeat/
-	            Dockerfile
-	            filebeat.yml
-            memcached/
-                Dockerfile
-            mongo/
-                Dockerfile
-                mongod.conf
-            mssql/ # sqlserver
-                Dockerfile
             mysql/
                 Dockerfile
                 my.cnf
+            neo4j/
+                conf/
+                    neo4j.conf
+                Dockerfile
             openresty/ # 基于 NGINX 和 LuaJIT 的 Web 平台
                 conf.d/
                     default.conf
                 Dockerfile
                 nginx.conf
-            php56/
-                pkg/
-                    memcache.taz # php7 memcache扩展
-                Dockerfile
-                php.ini
-                php-dev.ini
-                php-fpm.conf
             php72/
                 pkg/
                 Dockerfile
@@ -55,23 +44,7 @@ $ docker-compose pause    # Pause services
                 php-fpm.conf
             redis/ # 默认密码为123456
                 Dockerfile	
-            docker-all.yml  # 基础的openresty+nginx+php56+php72+mysql+reids+mongo+memcached配置
             docker-compose.yml  # 基础的openresty+php72+mysql+reids配置
-            docker-lnmp72.yml    # 基础的openresty+php72+mysql配置
-            docker-lnmp72-filebeat.yml    # 基础的openresty+php72+mysql配置，带nginx日志的收集的分析的脚本，要结合https://github.com/canren/elk使用
-        .env        # 配置文件
-        lnmp        # 启动脚本
-        lnmp72        # 启动脚本
+        .env.production        # 配置文件
         Readme.md   # 帮助文档
-    app/
-        index.php
-        mongo.php    # mongo测试文件
-        mysql.php    # mysql测试文件
-        phpinfo.php  # phpinfo
-        redis.php    # redis测试文件
-        memcache.php # memcache测试文件
-    xxx/
-    xxx2/
 ```
-地址：[https://github.com/canren/elk](https://github.com/canren/elk)
-------------------------
