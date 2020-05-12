@@ -13,9 +13,9 @@ services:
       - "lnmp"
     volumes:
       - $WORKSPACES
-      - ./php72/php-dev.ini:/usr/local/etc/php/php.ini:ro
-      - ./php72/php-fpm.conf:/usr/local/etc/php-fpm.conf:ro
-      - ../logs/php-fpm72:/var/log/php-fpm:rw
+      - ./php72/php-dev.ini:/usr/local/etc/php/php.ini:cached
+      - ./php72/php-fpm.conf:/usr/local/etc/php-fpm.conf:cached
+      - ../logs/php-fpm72:/var/log/php-fpm:cached
     restart: always
     command: php-fpm
 
@@ -33,9 +33,9 @@ services:
       - php-fpm72
     volumes:
       - $WORKSPACES
-      - ./openresty/conf.d:/etc/nginx/conf.d:ro
-      - ./openresty/nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf:ro
-      - ../logs/openresty:/usr/local/openresty/nginx/logs:rw
+      - ./openresty/conf.d:/etc/nginx/conf.d:cached
+      - ./openresty/nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf:cached
+      - ../logs/openresty:/usr/local/openresty/nginx/logs:cached
     restart: always
 
   mysql-db:
@@ -49,9 +49,9 @@ services:
     networks:
       - "lnmp"
     volumes:
-      - ../data/mysql:/var/lib/mysql:rw
-      - ../logs/mysql:/var/lib/mysql-logs:rw
-      - ./mysql/my.cnf:/etc/my.cnf:ro
+      - ../data/mysql:/var/lib/mysql:cached
+      - ../logs/mysql:/var/lib/mysql-logs:cached
+      - ./mysql/my.cnf:/etc/my.cnf:cached
     environment:
       MYSQL_ROOT_PASSWORD: 123456
       MYSQL_DATABASE: db_test
@@ -71,8 +71,8 @@ services:
     networks:
       - "lnmp"
     volumes:
-      - ../data/redis:/data
-      - ./redis/redis.conf:/etc/redis.conf:ro
+      - ../data/redis:/data:cached
+      - ./redis/redis.conf:/etc/redis.conf:cached
     command: "/etc/redis.conf"
     restart: always
 
@@ -88,9 +88,9 @@ services:
     networks:
       - "lnmp"
     volumes:
-      - ./neo4j/conf:/var/lib/neo4j/conf
-      - ../data/neo4j:/data:rw
-      - ../logs/neo4j:/logs:rw
+      - ./neo4j/conf:/var/lib/neo4j/conf:cached
+      - ../data/neo4j:/data:cached
+      - ../logs/neo4j:/logs:cached
     restart: always
 
 networks:
