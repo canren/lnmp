@@ -1,5 +1,4 @@
 ARG LNMP_PHP72_VERSION
-ARG SWOOLE_LICENSE_FILES
 
 FROM php:$LNMP_PHP72_VERSION
 MAINTAINER canren "bestsxf@gmail.com"
@@ -21,9 +20,9 @@ RUN pecl install redis && echo "extension=redis.so" > /usr/local/etc/php/conf.d/
 RUN pecl install igbinary && echo "extension=igbinary.so" > /usr/local/etc/php/conf.d/igbinary.ini
 RUN pecl install swoole && echo "extension=swoole.so" > /usr/local/etc/php/conf.d/swoole.ini
 
-RUN curl https://business.swoole.com/static/loader2.0.0/swoole_loader72.so > /usr/local/lib/php/extensions/no-debug-non-zts-20170718/swoole_loader72.so \
-    && { echo "extension=swoole_loader72.so"; \
-         echo "swoole_license_files=$SWOOLE_LICENSE_FILES"; } > /usr/local/etc/php/conf.d/swoole_loader.ini
+# RUN curl https://business.swoole.com/static/loader2.0.0/swoole_loader72.so > /usr/local/lib/php/extensions/no-debug-non-zts-20170718/swoole_loader72.so \
+#     && { echo "extension=swoole_loader72.so"; \
+#          echo "swoole_license_files=/data/www/xxx/license.zl"; } > /usr/local/etc/php/conf.d/swoole_loader.ini
 
 # 安装 Composer
 ENV COMPOSER_HOME /root/composer
