@@ -1,4 +1,4 @@
-version: '3.3'
+version: '3.4'
 services:
 
   php-fpm72:
@@ -15,10 +15,12 @@ services:
       - $WORKSPACES
       - ./php72/php-dev.ini:/usr/local/etc/php/php.ini:cached
       - ./php72/php-fpm.conf:/usr/local/etc/php-fpm.conf:cached
+      - ./php72/worker/supervisor:/etc/supervisor:cached
+      - ./php72/worker/crontabs/root:/var/spool/cron/root:cached
       - ../logs/php-fpm72:/var/log/php-fpm:cached
     restart: always
-    command: php-fpm
-
+    command: 
+      - php-fpm
   openresty:
     build:
       context: openresty/
