@@ -20,7 +20,12 @@ services:
       - ../logs/php-fpm72:/var/log/php-fpm:cached
     restart: always
     command: 
-      - php-fpm
+      - /bin/sh
+      - -c
+      - |
+          supervisord -c /etc/supervisor/supervisord.conf
+          php-fpm
+
   openresty:
     build:
       context: openresty/
