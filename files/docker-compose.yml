@@ -13,6 +13,7 @@ services:
       - "lnmp"
     volumes:
       - $WORKSPACES
+      - ./php72/apt/sources.list:/etc/apt/sources.list:cached
       - ./php72/php-dev.ini:/usr/local/etc/php/php.ini:cached
       - ./php72/php-fpm.conf:/usr/local/etc/php-fpm.conf:cached
       - ./php72/worker/supervisor:/etc/supervisor:cached
