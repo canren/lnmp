@@ -16,14 +16,15 @@ services:
       - ./php72/php-dev.ini:/usr/local/etc/php/php.ini:cached
       - ./php72/php-fpm.conf:/usr/local/etc/php-fpm.conf:cached
       - ./php72/worker/supervisor:/etc/supervisor:cached
-      - ./php72/worker/crontabs/root:/var/spool/cron/root:cached
+      - ./php72/worker/crontabs/root:/var/spool/cron/crontabs/root:cached
       - ../logs/php-fpm72:/var/log/php-fpm:cached
     restart: always
     command: 
       - /bin/sh
       - -c
       - |
-          supervisord -c /etc/supervisor/supervisord.conf
+          /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
+          /etc/init.d/cron start
           php-fpm
 
   openresty:
