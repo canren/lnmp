@@ -10,6 +10,8 @@ RUN ln -snf /usr/share/zone/$TZ /etc/localtime && echo $TZ > /etc/timezone
 # copy文件
 COPY ./pkg/memcache.tgz /home/memcache.tgz
 
+COPY ./apt/sources.list /etc/apt/sources.list
+
 # 更新安装依赖包和php核心扩展
 RUN apt-get update
 RUN apt-get install -y git libfreetype6-dev libjpeg62-turbo-dev libpng-dev libmemcached-dev zlib1g zlib1g-dev
