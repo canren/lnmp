@@ -33,6 +33,7 @@ services:
       args:
         LNMP_OPENRESTY_VERSION: $LNMP_OPENRESTY_VERSION
     container_name: "canren-lnmp-openresty"
+    # privileged: true
     ports:
       - "80:80"
     networks:
@@ -45,6 +46,11 @@ services:
       - ./openresty/nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf:cached
       - ../logs/openresty:/usr/local/openresty/nginx/logs:cached
     restart: always
+    # command: 
+    #   - /bin/sh
+    #   - -c
+    #   - |
+    #       systemctl start snapd
 
   mysql-db:
     build:
