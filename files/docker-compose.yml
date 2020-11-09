@@ -33,8 +33,13 @@ services:
       - -c
       - |
           /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
-          /etc/init.d/cron start
           php-fpm
+      # - /bin/sh
+      # - -c
+      # - |
+      #     /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
+      #     php /data/www/hyperf/hyperf/bin/hyperf.php start
+      #     php-fpm
 
   openresty:
     build:
