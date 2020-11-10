@@ -9,7 +9,6 @@ services:
     container_name: "canren-lnmp-php72"
     ports:
       - "9000:9000"
-      - "9501:9501"
     networks:
       - "lnmp"
     links:
