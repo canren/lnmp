@@ -9,6 +9,7 @@ services:
     container_name: "canren-lnmp-php72"
     ports:
       - "9000:9000"
+      - "9501:9501"
     networks:
       - "lnmp"
     links:
@@ -32,14 +33,15 @@ services:
       - /bin/sh
       - -c
       - |
-          /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
-          php-fpm
+        /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
+        /usr/local/sbin/php-fpm -D
+        
       # - /bin/sh
       # - -c
       # - |
       #     /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
-      #     php /data/www/hyperf/hyperf/bin/hyperf.php start
-      #     php-fpm
+      #     /usr/local/sbin/php-fpm -D
+      #     /usr/local/bin/php /data/www/hyperf/hyperf/bin/hyperf.php start
 
   openresty:
     build:
