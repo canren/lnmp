@@ -33,7 +33,7 @@ services:
       - -c
       - |
         /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
-        /usr/local/sbin/php-fpm -D
+        /usr/local/sbin/php-fpm
         
       # - /bin/sh
       # - -c
@@ -58,7 +58,6 @@ services:
     depends_on:
       - php-fpm72
     volumes:
-      - $WORKSPACES
       - ./openresty/conf.d:/etc/nginx/conf.d:cached
       - ./openresty/nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf:cached
       - ../logs/openresty:/usr/local/openresty/nginx/logs:cached
