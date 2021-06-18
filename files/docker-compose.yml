@@ -26,14 +26,7 @@ services:
       - |
         /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
         /usr/local/sbin/php-fpm
-        
-      # - /bin/sh
-      # - -c
-      # - |
-      #     /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
-      #     /usr/local/sbin/php-fpm -D
-      #     /usr/local/bin/php /data/www/hyperf/hyperf/bin/hyperf.php start
-
+  
   openresty:
     build:
       context: openresty/
@@ -54,11 +47,6 @@ services:
       - ./openresty/conf.d:/etc/nginx/conf.d:cached
       - ../logs/openresty:/usr/local/openresty/nginx/logs:cached
     restart: always
-    # command: 
-    #   - /bin/sh
-    #   - -c
-    #   - |
-    #       systemctl start snapd
 
   mysql-db:
     build:
