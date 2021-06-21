@@ -1,5 +1,3 @@
-ARG REDIS_VERSION
-
 FROM sonarqube:latest
 MAINTAINER canren "bestsxf@gmail.com"
 

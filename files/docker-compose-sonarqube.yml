@@ -8,13 +8,13 @@ services:
     ports:
       - "9001:9000"
     networks:
-      - "lnmp"
+      - "sonarqube"
     volumes:
       - $WORKSPACES
     restart: always
 
 networks:
-  lnmp:
+  sonarqube:
     driver: bridge
 
 
