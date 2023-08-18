@@ -1,49 +1,71 @@
 version: '3.4'
 services:
 
-  php-fpm72:
+  php-fpm56:
     build:
-      context: php72/
-      args:
-        LNMP_PHP72_VERSION: $LNMP_PHP72_VERSION
-    container_name: "canren-lnmp-php72"
+      context: php56/
+    container_name: "lnmp-php56"
     # privileged: true
-    ports:
-      - "9000:9000"
     networks:
       - "lnmp"
     volumes:
       - $WORKSPACES
-      - ./php72/php.ini:/usr/local/etc/php/php.ini:rw
-      - ./php72/php-fpm.conf:/usr/local/etc/php-fpm.conf:rw
-      - ./php72/php-fpm.d:/usr/local/etc/php-fpm.d:cached
-      - ./php72/worker/supervisor:/etc/supervisor:cached
-      - ../logs/php-fpm72:/var/log/php-fpm:cached
     restart: always
-    command: 
-      - /bin/sh
-      - -c
-      - |
-        /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
-        /usr/local/sbin/php-fpm
-  
+    command: /usr/local/sbin/php-fpm
+
+  php-fpm71:
+    build:
+      context: php71/
+    container_name: "lnmp-php71"
+    # privileged: true
+    networks:
+      - "lnmp"
+    volumes:
+      - $WORKSPACES
+    restart: always
+    command: /usr/local/sbin/php-fpm
+
+  php-fpm72:
+    build:
+      context: php72/
+    container_name: "lnmp-php72"
+    # privileged: true
+    networks:
+      - "lnmp"
+    volumes:
+      - $WORKSPACES
+    restart: always
+    command: /usr/local/sbin/php-fpm
+
+  php-fpm74:
+    build:
+      context: php74/
+    container_name: "lnmp-php74"
+    # privileged: true
+    networks:
+      - "lnmp"
+    volumes:
+      - $WORKSPACES
+    restart: always
+    command: /usr/local/sbin/php-fpm
+
   openresty:
     build:
       context: openresty/
-      args:
-        LNMP_OPENRESTY_VERSION: $LNMP_OPENRESTY_VERSION
-    container_name: "canren-lnmp-openresty"
+    container_name: "lnmp-openresty"
     # privileged: true
     ports:
       - "80:80"
+      - "8080:8080"
+      - "8088:8088"
     networks:
       - "lnmp"
-    links:
-      - php-fpm72
     depends_on:
+      - php-fpm56
+      - php-fpm71
       - php-fpm72
     volumes:
-      - ./openresty/nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf:rw
+      - $WORKSPACES
       - ./openresty/conf.d:/etc/nginx/conf.d:cached
       - ../logs/openresty:/usr/local/openresty/nginx/logs:cached
     restart: always
@@ -53,13 +75,12 @@ services:
       context: mysql/
       args:
         LNMP_MYSQL_VERSION: $LNMP_MYSQL_VERSION
-    container_name: "canren-lnmp-mysql"
+    container_name: "lnmp-mysql"
     ports:
       - "3306:3306"
     networks:
       - "lnmp"
     volumes:
-      - ./mysql/my.cnf:/etc/my.cnf:rw
       - ../data/mysql:/var/lib/mysql:cached
       - ../logs/mysql:/var/lib/mysql-logs:cached
     environment:
@@ -75,7 +96,7 @@ services:
       context: redis/
       args:
         REDIS_VERSION: $REDIS_VERSION
-    container_name: "canren-lnmp-redis"
+    container_name: "lnmp-redis"
     ports:
       - "6379:6379"
     networks:
@@ -84,23 +105,6 @@ services:
       - ./redis/redis.conf:/etc/redis.conf:rw
       - ../data/redis:/data:cached
     command: "/etc/redis.conf"
-    restart: always
-
-  neo4j-db: # 默认密码是neo4j
-    build:
-      context: neo4j/
-      args:
-        NEO4J_VERSION: $NEO4J_VERSION
-    container_name: "canren-lnmp-neo4j"
-    ports:
-      - "7474:7474"
-      - "7687:7687"
-    networks:
-      - "lnmp"
-    volumes:
-      - ./neo4j/conf:/var/lib/neo4j/conf:rw
-      - ../data/neo4j:/data:cached
-      - ../logs/neo4j:/logs:cached
     restart: always
 
 networks:
